@@ -45,7 +45,7 @@ RTC_DS3231 rtc;
 void displayValues(); 
 void displayTime();
 
-unsigned long delayTime;
+unsigned long delayTime, TempsActuel, TempsAvant ;
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
 void setup() {
@@ -96,12 +96,17 @@ void setup() {
 void loop() { 
 
   // printValues();
-  displayValues();
-  delay(delayTime);
-  displayTime();
-  delay(1000);
-}
+    // Delay between measurements.
+  TempsActuel = millis();
 
+  if (TempsActuel - TempsAvant  >= 10000) {
+       displayValues();
+       delay(5000);
+       TempsAvant = TempsActuel;
+    } 
+  
+  displayTime();
+}
 /** void printValues() {
 
   Serial.print("Temperature = ");
