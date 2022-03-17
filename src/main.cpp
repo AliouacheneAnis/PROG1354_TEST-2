@@ -51,8 +51,8 @@ void displayValues();  // Declaration fonction pour affichage les valeur sur l'e
 void displayTime();    // Declaration Fonction pour affichage du temps sur l'ecran OLED
 
 // Declaration Variables 
-unsigned long  TempsActuel, TempsAvant ;
-const unsigned long DELAY_TIME = 5000, DELAY_CHANGE = 10000;
+unsigned long  TempsActuel, TempsAvant, TempsActuelTmp, TempsAvantTmp;;
+const unsigned long DELAY_TIME = 6000, DELAY_CHANGE = 12000, DELAY_TEMP =2000;
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"}; 
 
 
@@ -112,9 +112,16 @@ void loop() {
   
   // Affichage de la temperature et humidity 
   if (TempsActuel - TempsAvant  >= DELAY_CHANGE) {
-       displayValues();   // Appeler la fonction pour afficher la temperature sur l'ecran OLED 
-       delay(DELAY_TIME);
+
        TempsAvant = TempsActuel;
+
+       // Boucle while pour afficher la temperature et humidity  pendant 6 secondes 
+       while (TempsActuel - TempsAvant  <= DELAY_TIME )
+       {
+         displayValues();   // Appeler la fonction pour afficher la temperature sur l'ecran OLED 
+         TempsActuel = millis();
+       }
+       
     } 
   
   // Appel\la fonction popur afficher le temps sur l'ecran OLED 
@@ -124,32 +131,41 @@ void loop() {
 // Implementation de la fonction d'affichage de valeur 
 void displayValues() {
   
-  display.clearDisplay();  // effacer l'ecran 
+  TempsActuelTmp = millis();
 
-  // display temperature
-  display.setTextSize(1);
-  display.setCursor(0,0);
-  display.print("Temperature: ");
-  display.setTextSize(2);
-  display.setCursor(0,10);
-  display.print(String(bme.readTemperature()));  // Recupurer la donnee de temperature et l'afficher 
-  display.print(" ");
-  display.setTextSize(1);
-  display.cp437(true);
-  display.write(167);
-  display.setTextSize(2);
-  display.print("C");
+    // Affichage de la temperature et humidity chaque 2 secondes  
+  if (TempsActuelTmp -  TempsAvantTmp  >= DELAY_TEMP) {
+      
+      display.clearDisplay();  // effacer l'ecran 
+    
+      // display temperature
+      display.setTextSize(1);
+      display.setCursor(0,0);
+      display.print("Temperature: ");
+      display.setTextSize(2);
+      display.setCursor(0,10);
+      display.print(String(bme.readTemperature()));  // Recupurer la donnee de temperature et l'afficher 
+      display.print(" ");
+      display.setTextSize(1);
+      display.cp437(true);
+      display.write(167);
+      display.setTextSize(2);
+      display.print("C");
+      
+      // display humidity
+      display.setTextSize(1);
+      display.setCursor(0, 35);
+      display.print("Humidity: ");
+      display.setTextSize(2);
+      display.setCursor(0, 45);
+      display.print(String(bme.readHumidity())); // Recupurer la donnee de l'humidity et l'afficher 
+      display.print(" %"); 
+      display.display();
+
+      TempsAvantTmp = TempsActuelTmp;
   
-  // display humidity
-  display.setTextSize(1);
-  display.setCursor(0, 35);
-  display.print("Humidity: ");
-  display.setTextSize(2);
-  display.setCursor(0, 45);
-  display.print(String(bme.readHumidity())); // Recupurer la donnee de l'humidity et l'afficher 
-  display.print(" %"); 
-  display.display();
-
+    } 
+  
 }
 
 // Implemetation de la fonction d'affichage du temps 
