@@ -2,8 +2,10 @@
   Titre      : I2C Protocol
   Auteur     : Anis Aliouachene
   Date       : 15/03/2022
-  Description: Utilisation de deux peripherique d'entre et une de sortie avec le protocol I2C et le ESP32
-  Version    : 0.0.1
+  Description: Utilisation de deux peripherique d'entre : BME280 et RCT et une de sortie : OLED avec le protocol I2C et le ESP32
+  BME 280 nous permet de capter temperature et humidity et RTC pour afficher l'heure et la date 
+  OLED sert a afficher les information chaque 5 min et tous les composantes se communique via le bus I2C 
+  Version    : 0.0.2 
 */
 
 
