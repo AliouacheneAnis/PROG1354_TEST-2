@@ -24,36 +24,16 @@
 #include <Arduino.h>
 #include <Wire.h>  // Wire pour Prototcol I2C
 #include <Adafruit_Sensor.h>   // Pour les capteur et Sensor adafruit 
-#include <Adafruit_BME280.h> // Pour fonctionner le BME280
 #include <Adafruit_GFX.h>   // Pour fonctionner l'ecran OLED 
-#include <Adafruit_SSD1306.h> //  Pour fonctionner l'ecran OLED 
-#include "RTClib.h" // Pour fonctionner le RTC 
+#include "Fonction.hpp"
 
 
-
-#define I2C_SDA 21   // define la broche SDA a utiliser sur ESP32 p
+#define I2C_SDA 21   // define la broche SDA a utiliser sur ESP32 
 #define I2C_SCL 22   // define la broche SCL a utiliser sur ESP32 
 
-#define SCREEN_WIDTH 128 // OLED display width, in pixels
-#define SCREEN_HEIGHT 64 // OLED display height, in pixels
-#define SEALEVELPRESSURE_HPA (1013.25)
-
-// Parametrer l'ecran OLED 
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
 // Declarations d'objets
 TwoWire I2CBME = TwoWire(0);
-Adafruit_BME280 bme; // Declaration objet bme 
-RTC_DS3231 rtc;      // Declration object rtc
-
-
-void displayValues();  // Declaration fonction pour affichage les valeur sur l'ecran OLED
-void displayTime();    // Declaration Fonction pour affichage du temps sur l'ecran OLED
-
-// Declaration Variables 
-unsigned long  TempsActuel, TempsAvant, TempsActuelTmp, TempsAvantTmp;;
-const unsigned long DELAY_TIME = 6000, DELAY_CHANGE = 12000, DELAY_TEMP =2000;
-char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"}; 
 
 
 // Fonction Setup 
@@ -108,100 +88,11 @@ void setup() {
 
 void loop() { 
 
-  TempsActuel = millis();
-  
-  // Affichage de la temperature et humidity 
-  if (TempsActuel - TempsAvant  >= DELAY_CHANGE) {
+  // Appel\la fonction popur afficher la temperature, humidity et pression sur l'ecran OLED 
+  displayTmpHum();
 
-       TempsAvant = TempsActuel;
-
-       // Boucle while pour afficher la temperature et humidity  pendant 6 secondes 
-       while (TempsActuel - TempsAvant  <= DELAY_TIME )
-       {
-         displayValues();   // Appeler la fonction pour afficher la temperature sur l'ecran OLED 
-         TempsActuel = millis();
-       }
-       
-    } 
-  
   // Appel\la fonction popur afficher le temps sur l'ecran OLED 
   displayTime();
 }
 
-// Implementation de la fonction d'affichage de valeur 
-void displayValues() {
-  
-  TempsActuelTmp = millis();
 
-    // Affichage de la temperature et humidity chaque 2 secondes  
-  if (TempsActuelTmp -  TempsAvantTmp  >= DELAY_TEMP) {
-      
-      display.clearDisplay();  // effacer l'ecran 
-    
-      // display temperature
-      display.setTextSize(1);
-      display.setCursor(0,0);
-      display.print("Temperature: ");
-      display.setTextSize(2);
-      display.setCursor(0,10);
-      display.print(String(bme.readTemperature()));  // Recupurer la donnee de temperature et l'afficher 
-      display.print(" ");
-      display.setTextSize(1);
-      display.cp437(true);
-      display.write(167);
-      display.setTextSize(2);
-      display.print("C");
-      
-      // display humidity
-      display.setTextSize(1);
-      display.setCursor(0, 35);
-      display.print("Humidity: ");
-      display.setTextSize(2);
-      display.setCursor(0, 45);
-      display.print(String(bme.readHumidity())); // Recupurer la donnee de l'humidity et l'afficher 
-      display.print(" %"); 
-      display.display();
-
-      TempsAvantTmp = TempsActuelTmp;
-  
-    } 
-  
-}
-
-// Implemetation de la fonction d'affichage du temps 
-void displayTime() {
-
-    DateTime now = rtc.now(); // Declaration object Now qui recois les donnees actuelle de la part de l'object rtc 
-
-    display.clearDisplay(); 
-
-    // display time 
-    display.setTextSize(1);
-    display.setCursor(0,0);
-    display.print("Time : ");
-    display.setTextSize(2);
-    display.setCursor(0,10);
-    display.print(now.hour(), DEC);   // recuperer et afficher l'heure actuelle 
-    display.print(':');
-    display.print(now.minute(), DEC);   // recuperer et afficher les minutes 
-    display.print(':');
-    display.print(now.second(), DEC);  // recuperer et afficher les secondes
-
-    // display Date
-    display.setTextSize(1);
-    display.setCursor(0, 35);
-    display.print("Date : ");
-    display.setTextSize(1);
-    display.setCursor(0, 45);
-    display.print(now.year(), DEC);  // recuperer et afficher l'annee actuelle
-    display.print('/');
-    display.print(now.month(), DEC); // recuperer et afficher le mois actuel 
-    display.print('/');
-    display.print(now.day(), DEC);  // recuperer et afficher le jour actuel 
-    display.print(" (");
-    display.print(daysOfTheWeek[now.dayOfTheWeek()]);  // afficher le nom du jour 
-    display.print(") ");
-
-    display.display();  // appeler la fonction pour afficher 
-    
-}
