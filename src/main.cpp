@@ -25,7 +25,13 @@
 #include <Wire.h>  // Wire pour Prototcol I2C
 #include <Adafruit_Sensor.h>   // Pour les capteur et Sensor adafruit 
 #include <Adafruit_GFX.h>   // Pour fonctionner l'ecran OLED 
+#include<WiFi.h>
+#include <AsyncTCP.h>
+#include <ESPAsyncWebServer.h>
+#include <AsyncElegantOTA.h>
 #include "Fonction.hpp"
+#include "Secret.hpp"
+#include "page.hpp"
 
 
 #define I2C_SDA 21   // define la broche SDA a utiliser sur ESP32 
@@ -34,6 +40,10 @@
 
 // Declarations d'objets
 TwoWire I2CBME = TwoWire(0);
+
+// Create AsyncWebServer object on port 80
+AsyncWebServer server(80);
+AsyncWebSocket ws("/ws");
 
 
 // Fonction Setup 
@@ -67,22 +77,49 @@ void setup() {
       while (1) ;
     }
 
-
-    if (rtc.lostPower()) {
-      Serial.println("RTC lost power, let's set the time!");
-      // When time needs to be set on a new device, or after a power loss, the
-      // following line sets the RTC to the date & time this sketch was compiled
-      rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-      // This line sets the RTC with an explicit date & time, for example to set
-      // January 21, 2014 at 3am you would call: rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
-    }
-
-
     Serial.println("-- Default Test --");
     Serial.println();
 
     display.clearDisplay();
     display.setTextColor(WHITE);
+
+    WiFi.mode(WIFI_STA);
+    WiFi.begin(ssid, password);
+    Serial.println("");
+
+    // Wait for connection
+    while (WiFi.status() != WL_CONNECTED) {
+      delay(500);
+      Serial.print(".");
+    }
+    Serial.println("");
+    Serial.print("Connected to ");
+    Serial.println(ssid);
+    Serial.print("IP address: ");
+    Serial.println(WiFi.localIP());
+
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
+      request->send(200, "text/html", index_html);
+    });
+
+  server.on("/temperature", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send_P(200, "text/plain", ReadTemperature().c_str());
+  });
+  server.on("/humidity", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send_P(200, "text/plain", ReadHumidity().c_str());
+  });
+
+   server.on("/pressure", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send_P(200, "text/plain", ReadPressure().c_str());
+  });
+
+  server.on("/time", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send_P(200, "text/plain", TimeRead().c_str());
+  });
+
+    AsyncElegantOTA.begin(&server);    // Start ElegantOTA
+    server.begin();
+    Serial.println("HTTP server started");
 
 }
 
