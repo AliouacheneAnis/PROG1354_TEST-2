@@ -1,3 +1,5 @@
+// Declation de la constante qui contient la page HTML 
+
 const char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE html>
 <html lang="en">

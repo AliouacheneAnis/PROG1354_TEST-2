@@ -1,10 +1,9 @@
 /*
-  Titre      : I2C Protocol
+  Titre      : Test 2 PROG1355 ET PROG1354
   Auteur     : Anis Aliouachene
-  Date       : 15/03/2022
-  Description: Utilisation de deux peripherique d'entre : BME280 et RCT et une de sortie : OLED avec le protocol I2C et le ESP32
-  BME 280 nous permet de capter temperature et humidity et RTC pour afficher l'heure et la date 
-  OLED sert a afficher les information chaque 5 min et tous les composantes se communique via le bus I2C 
+  Date       : 04/04/2022
+  Description: Resolution Probleme proposer en affichant la temperature, humidite et pression avec l'heure actuel sur une page web 
+  et sur un ecran OLED localement 
   Version    : 0.0.2 
 */
 
@@ -29,9 +28,9 @@
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <AsyncElegantOTA.h>
-#include "Secret.hpp"
-#include "page.hpp"
-#include "fonction.hpp"
+#include "Secret.hpp"  // donnees wifi
+#include "page.hpp"    // Page Web 
+#include "fonction.hpp" // Code
 
 
 #define I2C_SDA 21   // define la broche SDA a utiliser sur ESP32 
@@ -82,7 +81,8 @@ void setup() {
 
     display.clearDisplay();
     display.setTextColor(WHITE);
-
+    
+    // Connexion au wifi
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, password);
     Serial.println("");
@@ -98,7 +98,7 @@ void setup() {
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
   
-
+  // Envoi des donnees sur la page web 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
       request->send(200, "text/html", index_html);
     });
@@ -118,7 +118,8 @@ void setup() {
     request->send_P(200, "text/plain", ReadPressure().c_str());
   });
 
-    AsyncElegantOTA.begin(&server);    // Start ElegantOTA
+
+    AsyncElegantOTA.begin(&server);    // Start serveur ElegantOTA
     server.begin();
     Serial.println("HTTP server started");
 
@@ -126,10 +127,14 @@ void setup() {
 
 void loop() { 
 
+  // Appel la fonction pour avoir le temps
   getTime();
   
-  // Appel\la fonction popur afficher la temperature, humidity et pression sur l'ecran OLED 
+  // Appel la fonction popur afficher la temperature, humidity et pression sur l'ecran OLED 
   displayTmpHum();
+
+  // Appel la fonction pour avoir les donnees 
+  getData();
 
   // Appel\la fonction popur afficher le temps sur l'ecran OLED 
   displayTime();

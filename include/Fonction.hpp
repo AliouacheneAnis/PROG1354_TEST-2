@@ -21,12 +21,14 @@ Adafruit_BME280 bme; // Declaration objet bme
 
 #define SEALEVELPRESSURE_HPA (1013.25)
 
-void displayValues();  // Declaration fonction pour affichage les valeur sur l'ecran OLED
-void displayTime();    // Declaration Fonction pour affichage du temps sur l'ecran OLED
-void displayTmpHum();
-void getTime(); 
-void getData ();
-String ReadTemperature();
+void displayValues();     // Declaration fonction pour affichage les valeur sur l'ecran OLED
+void displayTime();       // Declaration Fonction pour affichage du temps sur l'ecran OLED
+void displayTmpHum();     // Declaration Fonction pour affichage les donnees temperature, humidite et pression 
+void getTime();           // Declaration Fonction pour affichage les donnees temperature, humidite et pression 
+void getData ();          // Declaration Fonction pour affichage les donnees temperature, humidite et pression 
+
+// Declaration Fonctions pour transformer les donnees en string 
+String ReadTemperature(); 
 String ReadHumidity();
 String ReadPressure();
 String TimeRead();
@@ -37,6 +39,7 @@ void getTime(){
  
    DateTime now = rtc.now(); // Declaration object Now qui recois les donnees actuelle de la part de l'object rtc 
    
+   // recupuration du temps actuel et Changement type de donnees en string
    Heure = String(now.hour(), DEC); 
    Minute = String(now.minute(),DEC); 
    Seconde = String(now.second(), DEC); 
@@ -44,9 +47,12 @@ void getTime(){
    Mois = String(now.month(), DEC);
    Jour = String(now.day(),DEC); 
    Jrn = String (daysOfTheWeek[now.dayOfTheWeek()]) ;
+
+   // creation chaine de caracter pour l'envoi sur page web  
    TimeServer = Heure + ':' + Minute + ':' + Seconde + ' ' + Annee + '/' + Mois + '/' + Jour + " (" + Jrn + ") ";
 }
 
+// Fonction pour demander de capter les donnees 
 void getData (){
   Temperature = bme.readTemperature(); 
   Humidity = bme.readHumidity();
@@ -163,6 +169,7 @@ void displayTime() {
 }
 
 
+// Fonctions qui change le type en string pour l'envoi avec ajax 
 String ReadTemperature() {
     return String(Temperature);
   }

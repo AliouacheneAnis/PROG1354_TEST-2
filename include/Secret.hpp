@@ -1,2 +1,3 @@
-const char* ssid = "Note10";
-const char* password = "abcd7593";
+// Donnees sur le wifi 
+const char* ssid = "IDO-OBJECTS";
+const char* password = "42Bidules!";
