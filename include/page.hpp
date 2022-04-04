@@ -70,6 +70,7 @@ const char index_html[] PROGMEM = R"rawliteral(
         </div>
     </body>
     <script>
+              
               setInterval(function ( ) {
                 var xhttp = new XMLHttpRequest();
                 xhttp.onreadystatechange = function() {
@@ -79,7 +80,8 @@ const char index_html[] PROGMEM = R"rawliteral(
                 };
                 xhttp.open("GET", "/temperature", true);
                 xhttp.send();
-              }, 5000 ) ;
+              }, 1200 ) ;
+
 
               setInterval(function ( ) {
                 var xhttp = new XMLHttpRequest();
@@ -90,7 +92,7 @@ const char index_html[] PROGMEM = R"rawliteral(
                 };
                 xhttp.open("GET", "/humidity", true);
                 xhttp.send();
-              }, 5000 ) ;
+              }, 1400 ) ;
 
               setInterval(function ( ) {
                 var xhttp = new XMLHttpRequest();
@@ -101,7 +103,7 @@ const char index_html[] PROGMEM = R"rawliteral(
                 };
                 xhttp.open("GET", "/pressure", true);
                 xhttp.send();
-              }, 5000 ) ;
+              }, 1600 ) ;
 
               setInterval(function ( ) {
                 var xhttp = new XMLHttpRequest();
@@ -112,7 +114,7 @@ const char index_html[] PROGMEM = R"rawliteral(
                 };
                 xhttp.open("GET", "/time", true);
                 xhttp.send();
-              }, 1000 ) ;
+              },1000 ) ;
 
 </script>
 </html>)rawliteral"; 

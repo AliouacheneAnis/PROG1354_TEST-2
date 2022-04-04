@@ -25,13 +25,13 @@
 #include <Wire.h>  // Wire pour Prototcol I2C
 #include <Adafruit_Sensor.h>   // Pour les capteur et Sensor adafruit 
 #include <Adafruit_GFX.h>   // Pour fonctionner l'ecran OLED 
-#include<WiFi.h>
+#include <WiFi.h>
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <AsyncElegantOTA.h>
-#include "Fonction.hpp"
 #include "Secret.hpp"
 #include "page.hpp"
+#include "fonction.hpp"
 
 
 #define I2C_SDA 21   // define la broche SDA a utiliser sur ESP32 
@@ -97,10 +97,15 @@ void setup() {
     Serial.println(ssid);
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
+  
 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
       request->send(200, "text/html", index_html);
     });
+
+  server.on("/time", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send_P(200, "text/plain", TimeRead().c_str());
+  });    
 
   server.on("/temperature", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send_P(200, "text/plain", ReadTemperature().c_str());
@@ -113,10 +118,6 @@ void setup() {
     request->send_P(200, "text/plain", ReadPressure().c_str());
   });
 
-  server.on("/time", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send_P(200, "text/plain", TimeRead().c_str());
-  });
-
     AsyncElegantOTA.begin(&server);    // Start ElegantOTA
     server.begin();
     Serial.println("HTTP server started");
@@ -125,6 +126,8 @@ void setup() {
 
 void loop() { 
 
+  getTime();
+  
   // Appel\la fonction popur afficher la temperature, humidity et pression sur l'ecran OLED 
   displayTmpHum();
 
