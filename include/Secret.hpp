@@ -1,3 +1,3 @@
 // Donnees sur le wifi 
-const char* ssid = "IDO-OBJECTS";
-const char* password = "42Bidules!";
+const char* ssid = "Your WiFi SSID";
+const char* password = "Your WiFi Password ";

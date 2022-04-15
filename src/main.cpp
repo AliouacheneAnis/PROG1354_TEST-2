@@ -1,5 +1,5 @@
 /*
-  Titre      : Test 2 PROG1355 ET PROG1354
+  Titre      : BME 280 
   Auteur     : Anis Aliouachene
   Date       : 04/04/2022
   Description: Resolution Probleme proposer en affichant la temperature, humidite et pression avec l'heure actuel sur une page web 
@@ -7,17 +7,6 @@
   Version    : 0.0.2 
 */
 
-
-/*
-  Rui Santos
-  Complete project details at https://RandomNerdTutorials.com/esp32-i2c-communication-arduino-ide/
-  
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files.
-  
-  The above copyright notice and this permission notice shall be included in all
-  copies or substantial portions of the Software.
-*/
 
 // Inclus les libraires necessaires 
 #include <Arduino.h>
@@ -30,7 +19,7 @@
 #include <AsyncElegantOTA.h>
 #include "Secret.hpp"  // donnees wifi
 #include "page.hpp"    // Page Web 
-#include "fonction.hpp" // Code
+#include "fonction.hpp"
 
 
 #define I2C_SDA 21   // define la broche SDA a utiliser sur ESP32 
@@ -76,9 +65,6 @@ void setup() {
       while (1) ;
     }
 
-    Serial.println("-- Default Test --");
-    Serial.println();
-
     display.clearDisplay();
     display.setTextColor(WHITE);
     
@@ -100,22 +86,22 @@ void setup() {
   
   // Envoi des donnees sur la page web 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-      request->send(200, "text/html", index_html);
+      request->send(200, "text/html", index_html);  // chargement page html
     });
 
   server.on("/time", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send_P(200, "text/plain", TimeRead().c_str());
+    request->send_P(200, "text/plain", TimeRead().c_str());  // envoi l'heure 
   });    
 
   server.on("/temperature", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send_P(200, "text/plain", ReadTemperature().c_str());
+    request->send_P(200, "text/plain", ReadTemperature().c_str()); // envoi temperature
   });
   server.on("/humidity", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send_P(200, "text/plain", ReadHumidity().c_str());
+    request->send_P(200, "text/plain", ReadHumidity().c_str()); // envoi humidity 
   });
 
    server.on("/pressure", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send_P(200, "text/plain", ReadPressure().c_str());
+    request->send_P(200, "text/plain", ReadPressure().c_str()); // envoi pressure
   });
 
 

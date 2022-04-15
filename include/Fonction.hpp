@@ -3,24 +3,6 @@
 #include <Adafruit_BME280.h> // Pour fonctionner le BME280
 #include "RTClib.h" // Pour fonctionner le RTC 
 
-// Declaration Variables 
-unsigned long  TempsActuel, TempsAvant,TempsActuelTmp, TempsAvantTmp;
-const unsigned long DELAY_TIME = 6000, DELAY_CHANGE = 12000, DELAY_TEMP =1000;
-char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"}; 
-float Temperature, Humidity, Pressure; 
-String TimeServer, Seconde, Minute, Heure, Jour, Mois, Annee, Jrn;  
-
-
-#define SCREEN_WIDTH 128 // OLED display width, in pixels
-#define SCREEN_HEIGHT 64 // OLED display height, in pixels
-
-// Parametrer l'ecran OLED 
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
-RTC_DS3231 rtc;      // Declration object rtc
-Adafruit_BME280 bme; // Declaration objet bme 
-
-#define SEALEVELPRESSURE_HPA (1013.25)
-
 void displayValues();     // Declaration fonction pour affichage les valeur sur l'ecran OLED
 void displayTime();       // Declaration Fonction pour affichage du temps sur l'ecran OLED
 void displayTmpHum();     // Declaration Fonction pour affichage les donnees temperature, humidite et pression 
@@ -34,6 +16,24 @@ String ReadPressure();
 String TimeRead();
 
 
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 64 // OLED display height, in pixels
+
+
+
+// Parametrer l'ecran OLED 
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+RTC_DS3231 rtc;      // Declration object rtc
+Adafruit_BME280 bme; // Declaration objet bme 
+
+// Declaration Variables 
+unsigned long  TempsActuel, TempsAvant,TempsActuelTmp, TempsAvantTmp;
+const unsigned long DELAY_TIME = 6000, DELAY_CHANGE = 12000, DELAY_TEMP =1000;
+char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"}; 
+float Temperature, Humidity, Pressure; 
+String TimeServer, Seconde, Minute, Heure, Jour, Mois, Annee, Jrn;  
+
+#define SEALEVELPRESSURE_HPA (1013.25)
 
 void getTime(){
  
@@ -185,6 +185,9 @@ String ReadPressure() {
 String TimeRead(){
     return TimeServer;
   }
+
+
+
 
 
 
